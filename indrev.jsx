@@ -17,22 +17,7 @@ const C = {
   shadow: "#0D0D0D", 
 };
 
-// 3. useBreakpoint hook
-const useBreakpoint = () => {
-  const [brk, setBrk] = useState('desktop');
-  useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      if (w < 600) setBrk('mobile');
-      else if (w < 1024) setBrk('tablet');
-      else setBrk('desktop');
-    };
-    check();
-    window.addEventListener('resize', check);
-    return () => window.removeEventListener('resize', check);
-  }, []);
-  return brk;
-};
+// 3. (useBreakpoint removed — dead code, all responsive handled by CSS) // UX FIX 5 DONE
 
 // 4. Data
 const GENDERS = ["All", "Men", "Women", "Kids", "Unisex"];
@@ -45,12 +30,24 @@ const CATS_BY_GENDER = {
 const CONDITIONS = ["New", "Like New", "Excellent", "Good"];
 
 const CATEGORY_DIRECTORY = [
-  { id: 'cat1', name: "Sportswear", icon: "⚽", bio: "Performance and athleisure gear.", color: "#1A1A2E" },
-  { id: 'cat2', name: "Official Merch", icon: "🎸", bio: "Tour merch and official artist drops.", color: "#2E1A1A" },
-  { id: 'cat3', name: "Anime", icon: "🎌", bio: "Exclusive anime collaborations and prints.", color: "#1A2E1A" },
-  { id: 'cat4', name: "Motorsports", icon: "🏎️", bio: "Racing jackets and motorsport inspired fashion.", color: "#3B1A2E" },
-  { id: 'cat5', name: "Accessories", icon: "💍", bio: "Jewelry, bags, and rare collectibles.", color: "#1A2E3B" }
+  { id: 'cat1',  name: "Sportswear",    icon: "⚽",  bio: "Performance and athleisure gear.",                    color: "#1A1A2E" },
+  { id: 'cat2',  name: "Official Merch",icon: "🎸",  bio: "Tour merch and official artist drops.",               color: "#2E1A1A" },
+  { id: 'cat3',  name: "Anime",         icon: "🎌",  bio: "Exclusive anime collaborations and prints.",          color: "#1A2E1A" },
+  { id: 'cat4',  name: "Motorsports",   icon: "🏎️", bio: "Racing jackets and motorsport inspired fashion.",     color: "#3B1A2E" },
+  { id: 'cat5',  name: "Accessories",   icon: "💍",  bio: "Jewelry, bags, and rare collectibles.",               color: "#1A2E3B" },
+  { id: 'cat6',  name: "Suits",         icon: "🤵",  bio: "Tailored luxury suiting for every occasion.",         color: "#1A1A2E" },
+  { id: 'cat7',  name: "Blazers",       icon: "🧥",  bio: "Sharp structured blazers from top houses.",           color: "#2E1A1A" },
+  { id: 'cat8',  name: "Shirts",        icon: "👔",  bio: "Dress shirts and casual tops, curated.",              color: "#1A2E1A" },
+  { id: 'cat9',  name: "Trousers",      icon: "👖",  bio: "Tailored and relaxed trousers for all.",              color: "#2E2E1A" },
+  { id: 'cat10', name: "Outerwear",     icon: "🧣",  bio: "Coats, parkas, and statement outerwear.",             color: "#1A1A3B" },
+  { id: 'cat11', name: "Footwear",      icon: "👟",  bio: "Rare sneakers, boots, and statement shoes.",          color: "#3B1A1A" },
+  { id: 'cat12', name: "Dresses",       icon: "👗",  bio: "Evening, midi, and archival dresses.",                color: "#2E1A3B" },
+  { id: 'cat13', name: "Tops",          icon: "👕",  bio: "Blouses, tees, and structured tops.",                 color: "#1A3B2E" },
+  { id: 'cat14', name: "Skirts",        icon: "🩱",  bio: "Mini, midi, and statement skirts.",                   color: "#3B2E1A" },
+  { id: 'cat15', name: "Bags",          icon: "👜",  bio: "Rare handbags, totes, and clutches.",                 color: "#1A2E3B" },
+  { id: 'cat16', name: "Bottoms",       icon: "🩲",  bio: "Shorts, joggers and casual bottoms.",                 color: "#2E3B1A" }
 ];
+// UX FIX 3 DONE
 
 const INITIAL_PRODUCTS = [
   // SELLER 1 (ARCHIVE BLVD) - 5 items
@@ -206,11 +203,14 @@ const GLOBAL_CSS = `
   .label-sm { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
   
   /* ATC visibility */
-  .atc-hover { opacity: 0; transition: opacity 0.2s ease; }
-  @media(hover: none) { 
-    .atc-always { opacity: 1 !important; } 
+  @media (hover: none) {
+    .atc-btn { opacity: 1 !important; }
   }
-  .neo-card:hover .atc-hover.on { opacity: 1; }
+  /* FIX 6 CSS DONE */
+
+  /* Gender strip */
+  .gender-strip { scroll-behavior: smooth; }
+  .gender-strip::-webkit-scrollbar { display: none; }
 
   /* Misc */
   .nav-desktop { display: none; }
@@ -232,6 +232,11 @@ const GLOBAL_CSS = `
     from { transform: translateX(100%); }
     to { transform: translateX(0); }
   }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* FIX 5 DONE */
 `;
 
 // 8. Shared style objects
@@ -278,7 +283,7 @@ const ModalWrapper = ({ close, title, children }) => (
 );
 
 // 10. ProductCard
-const ProductCard = ({ p, nav, setSelProduct, addCart }) => {
+const ProductCard = ({ p, nav, setSelProduct, addCart, wishlist = [], toggleWishlist }) => {
   const [hov, setHov] = useState(false);
   
   return (
@@ -295,6 +300,16 @@ const ProductCard = ({ p, nav, setSelProduct, addCart }) => {
         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.2)', fontSize: '4rem', transform: 'rotate(-45deg)' }}>{p.brand}</span>
         </div>
+
+        {toggleWishlist && (
+          <button
+            className="neo-btn"
+            style={{ position: 'absolute', top: '0.5rem', right: '0.5rem', zIndex: 10, background: C.surface, border: `3px solid ${C.border}`, boxShadow: `2px 2px 0 ${C.shadow}`, borderRadius: 0, padding: '0.25rem 0.5rem', fontSize: '1.1rem', cursor: 'pointer', color: wishlist.includes(p.id) ? C.red : C.ink }}
+            onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
+          >
+            {wishlist.includes(p.id) ? '♥' : '♡'}
+          </button>
+        )}
         
         {p.tag && (
           <div style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', zIndex: 10 }}>
@@ -305,10 +320,11 @@ const ProductCard = ({ p, nav, setSelProduct, addCart }) => {
         )}
         
         <div 
-          className={`atc-hover atc-always ${hov ? 'on' : ''}`} 
-          style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', zIndex: 10 }}
+          className="atc-btn"
+          style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', zIndex: 10, opacity: hov ? 1 : 0, transition: 'opacity 0.2s ease' }}
           onClick={(e) => { e.stopPropagation(); addCart(p); }}
         >
+          {/* FIX 6 DONE */}
           <div className="neo-btn" style={{ background: C.yellow, border: `3px solid ${C.border}`, padding: '0.25rem 0.75rem', boxShadow: `4px 4px 0 ${C.shadow}`, color: C.ink, fontWeight: 700, fontSize: '0.85rem' }}>
             + CART
           </div>
@@ -330,8 +346,9 @@ const ProductCard = ({ p, nav, setSelProduct, addCart }) => {
 };
 
 // 12. Navbar
-const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed }) => {
+const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed, onSearch }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const links = [
     { k: 'browse', l: 'Browse' },
     { k: 'categories', l: 'Categories' },
@@ -361,7 +378,22 @@ const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed }) => {
             ))}
           </div>
 
+          <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <input 
+              type="text" 
+              placeholder="Search..." 
+              value={searchQuery} 
+              onChange={e => setSearchQuery(e.target.value)} 
+              onKeyDown={e => e.key === 'Enter' && onSearch(searchQuery)}
+              style={{...INP, width: '280px'}} 
+            />
+            <button className="neo-btn" style={{...BTNG, padding: '0.5rem'}} onClick={() => onSearch(searchQuery)}>
+              🔍
+            </button>
+          </div>
+
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <button className="neo-btn nav-desktop" style={{...BTNG, padding: '0.5rem 1rem'}} onClick={() => nav('wishlist')}>♥ SAVED</button>
             <button className="neo-btn nav-desktop" style={{...BTNG, padding: '0.5rem 1rem'}} onClick={openLogin}>{userAuthed ? 'ACCOUNT' : 'LOGIN'}</button>
             <button className="neo-btn" style={{...BTNP, padding: '0.5rem 1rem'}} onClick={openCart}>
               CART {cartCount > 0 && `(${cartCount})`}
@@ -391,8 +423,10 @@ const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed }) => {
       <div className="tab-bar">
         {[
           { k: 'home', l: 'HOME', icon: '🏠' },
-          { k: 'browse', l: 'SHOP', icon: '🔍' },
-          { k: 'categories', l: 'CATEGORIES', icon: '📁' }
+          { k: 'browse', l: 'SHOP', icon: '🛍️' },
+          { k: 'search', l: 'SEARCH', icon: '🔍' },
+          { k: 'categories', l: 'CATEGORIES', icon: '📁' },
+          { k: 'wishlist', l: 'SAVED', icon: '♥' }
         ].map(x => (
           <div key={x.k} onClick={() => nav(x.k)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', color: page === x.k ? C.ink : C.muted }}>
             <span style={{ fontSize: '1.2rem', marginBottom: '0.2rem' }}>{x.icon}</span>
@@ -406,8 +440,15 @@ const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed }) => {
 };
 
 // 13. Home
-const Home = ({ nav, dbProducts, featured, setSelProduct, addCart }) => {
-  const featProducts = dbProducts?.filter(p => featured.includes(p.id)) || [];
+const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishlist, toggleWishlist }) => {
+  const featProducts = (() => {
+    const pinned = dbProducts.filter(p => featured.includes(p.id));
+    if (pinned.length > 0) return pinned;
+    const tagged = dbProducts.filter(p => p.tag === 'Featured');
+    if (tagged.length > 0) return tagged.slice(0, 4);
+    return dbProducts.slice(0, 8);
+  })();
+  // UX FIX 2 DONE
   return (
     <div key="home" style={{ animation: 'fadeIn 0.3s ease' }}>
       {/* Hero Section */}
@@ -463,22 +504,15 @@ const Home = ({ nav, dbProducts, featured, setSelProduct, addCart }) => {
       {/* Featured Section */}
       <div className="ctr sec">
         <h2 className="ts" style={{ textAlign: 'center', marginBottom: '3rem' }}>NEW ARRIVALS</h2>
-        {featProducts.length > 0 ? (
-          <div className="g-prod" style={{ justifyContent: 'center' }}>
-            {featProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} />)}
-          </div>
-        ) : (
-          <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
-            <h3 className="tc" style={{ marginBottom: '1rem' }}>NO FEATURED ITEMS SELECTED</h3>
-            <p className="tb" style={{ color: C.muted }}>Use the Admin Panel to configure featured products.</p>
-          </div>
-        )}
+        <div className="g-prod" style={{ justifyContent: 'center' }}>
+          {featProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+        </div>
       </div>
     </div>
   );
 };
 
-const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
+const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts, wishlist, toggleWishlist }) => {
   const [filterModal, setFilterModal] = useState(false);
   const [expanded, setExpanded] = useState({ dep: true, cat: false, cond: false, price: false });
   const [tab, setTab] = useState('All');
@@ -487,6 +521,7 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
   const [maxP, setMaxP] = useState(500000);
   const [sort, setSort] = useState('newest');
   const [search, setSearch] = useState('');
+  const [saleActive, setSaleActive] = useState(false); // FIX 3 DONE
 
   const toggleExp = (k) => setExpanded(p => ({ ...p, [k]: !p[k] }));
 
@@ -499,6 +534,7 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
     if (cats.length > 0) res = res.filter(p => cats.includes(p.cat));
     if (conds.length > 0) res = res.filter(p => conds.includes(p.cond));
     res = res.filter(p => p.price <= maxP);
+    if (saleActive) res = res.filter(p => p.tag === 'New'); // FIX 3 DONE
     
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -522,10 +558,27 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
           <h1 className="tp" style={{ margin: 0 }}>THE EDIT</h1>
         </div>
 
+        {/* Gender Tab Strip — UX FIX 1 DONE */}
+        <div className="gender-strip" style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.75rem', borderBottom: `4px solid ${C.border}`, marginBottom: '1.5rem' }}>
+          {GENDERS.map(g => (
+            <button
+              key={g}
+              className="neo-btn"
+              style={tab === g
+                ? { ...BTNG, background: C.ink, color: '#fff', boxShadow: `4px 4px 0 ${C.shadow}`, whiteSpace: 'nowrap' }
+                : { ...BTNG, whiteSpace: 'nowrap' }
+              }
+              onClick={() => { setTab(g); setCats([]); }}
+            >
+              {g}
+            </button>
+          ))}
+        </div>
+
         {/* Toolbar */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '2rem', borderTop: `4px solid ${C.border}`, borderBottom: `4px solid ${C.border}`, padding: '1rem 0', alignItems: 'center' }}>
-          <button className="neo-btn" style={{...BTNG, padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => {}}>
-            <span style={{ fontSize: '1rem', transform: 'rotate(45deg)' }}>🏷</span> SALE
+          <button className="neo-btn" style={{...(saleActive ? { ...BTNG, background: C.yellow } : BTNG), padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setSaleActive(!saleActive)}>
+            <span style={{ fontSize: '1rem', transform: 'rotate(45deg)' }}>🏷</span> {saleActive ? 'SALE ON' : 'SALE'}
           </button>
           <button className="neo-btn" style={{...BTNG, padding: '0.5rem 1rem', display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setFilterModal(true)}>
             <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>☷</span> FILTERS
@@ -545,7 +598,7 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
           <div className="label-sm" style={{ marginBottom: '1.5rem', color: C.muted }}>SHOWING {filtered.length} CURATED PIECES</div>
           {filtered.length > 0 ? (
             <div className="g-prod">
-              {filtered.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} />)}
+              {filtered.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
             </div>
           ) : (
             <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
@@ -571,22 +624,7 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
                   <input type="text" placeholder="Search Name or Brand..." style={{...INP, padding: '0.75rem'}} value={search} onChange={e => setSearch(e.target.value)} />
                 </div>
 
-                {/* Department Accordion */}
-                <div style={{ borderBottom: `3px solid ${C.border}` }}>
-                  <div style={{ padding: '1.25rem 1.5rem', display: 'flex', justifyContent: 'space-between', cursor: 'pointer' }} onClick={() => toggleExp('dep')}>
-                    <span className="tb" style={{ fontWeight: 700, fontSize: '0.9rem' }}>DEPARTMENT</span>
-                    <span className={`chevron ${expanded.dep ? 'open' : ''}`}>▼</span>
-                  </div>
-                  <div className={`accordion-content ${expanded.dep ? 'open' : 'closed'}`}>
-                    <div style={{ padding: '0 1.5rem 1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {GENDERS.map(g => (
-                        <button key={g} className="neo-btn" style={{ background: tab === g ? C.yellow : C.surface, color: C.ink, border: `2px solid ${C.border}`, padding: '0.5rem 1rem', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', boxShadow: tab === g ? `4px 4px 0 ${C.shadow}` : `2px 2px 0 ${C.shadow}` }} onClick={() => { setTab(g); setCats([]); }}>
-                          {g}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                {/* Department accordion removed — gender tabs now on Browse page directly */}
 
                 {/* Category Accordion */}
                 <div style={{ borderBottom: `3px solid ${C.border}` }}>
@@ -661,11 +699,85 @@ const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts }) => {
           <div style={{ marginTop: '5rem', paddingTop: '3rem', borderTop: `4px solid ${C.border}` }}>
             <h2 className="ts" style={{ marginBottom: '2rem' }}>RECENTLY VIEWED</h2>
             <div className="g-prod">
-              {recent.map(p => <ProductCard key={`rec-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} />)}
+              {recent.map(p => <ProductCard key={`rec-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
             </div>
+            {/* FEATURE 10 DONE */}
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+const Wishlist = ({ nav, dbProducts, wishlist, toggleWishlist, setSelProduct, addCart }) => {
+  const savedItems = dbProducts.filter(p => wishlist.includes(p.id));
+  return (
+    <div className="ctr sec" style={{ animation: 'fadeIn 0.3s ease', flex: 1 }}>
+      <h1 className="tp" style={{ marginBottom: '2rem' }}>SAVED ITEMS</h1>
+      {savedItems.length === 0 ? (
+        <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
+          <h3 className="tc" style={{ marginBottom: '1rem' }}>YOUR SAVED LIST IS EMPTY</h3>
+          <button className="neo-btn" style={{...BTNG, marginTop: '2rem'}} onClick={() => nav('browse')}>DISCOVER CURATED PIECES</button>
+        </div>
+      ) : (
+        <div className="g-prod">
+          {savedItems.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+        </div>
+      )}
+      {/* FEATURE 4 DONE */}
+    </div>
+  );
+};
+
+const SearchResults = ({ query, setQuery, dbProducts, nav, setSelProduct, addCart, wishlist, toggleWishlist }) => {
+  const filtered = useMemo(() => {
+    if (!query || !query.trim()) return [];
+    const q = query.toLowerCase();
+    return dbProducts.filter(p => !p.hidden && (
+      p.name.toLowerCase().includes(q) ||
+      p.brand.toLowerCase().includes(q) ||
+      p.cat.toLowerCase().includes(q) ||
+      p.gender.toLowerCase().includes(q)
+    ));
+  }, [query, dbProducts]);
+
+  return (
+    <div className="ctr sec" style={{ animation: 'fadeIn 0.3s ease', flex: 1 }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          value={query} 
+          onChange={e => setQuery(e.target.value)} 
+          style={{...INP, flex: 1, fontSize: '1.2rem', padding: '1rem'}} 
+        />
+        {query && (
+          <button className="neo-btn" style={{...BTNG, padding: '1rem 1.5rem', fontSize: '1.2rem'}} onClick={() => { setQuery(''); nav('browse'); }}>
+            ×
+          </button>
+        )}
+      </div>
+
+      {query.trim() ? (
+        filtered.length > 0 ? (
+          <>
+            <h2 className="ts" style={{ marginBottom: '2rem' }}>SHOWING {filtered.length} RESULTS FOR "{query}"</h2>
+            <div className="g-prod">
+              {filtered.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+            </div>
+          </>
+        ) : (
+          <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
+            <h3 className="tc" style={{ marginBottom: '1rem' }}>NO RESULTS FOR "{query}"</h3>
+            <button className="neo-btn" style={{...BTNG, marginTop: '2rem'}} onClick={() => { setQuery(''); nav('browse'); }}>CLEAR SEARCH</button>
+          </div>
+        )
+      ) : (
+        <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
+          <h3 className="tc" style={{ marginBottom: '1rem' }}>ENTER A SEARCH TERM</h3>
+        </div>
+      )}
+      {/* FEATURE 8 DONE */}
     </div>
   );
 };
@@ -703,7 +815,12 @@ const Product = ({ p, nav, addCart, checkout }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <span className="label-sm" style={{ color: C.muted, display: 'block', marginBottom: '0.5rem' }}>{p.gender} • {p.cat}</span>
-                <h1 className="tp" style={{ marginBottom: '1rem' }}>{p.name}</h1>
+                <h1 className="tp" style={{ marginBottom: '0.75rem' }}>{p.name}</h1>
+                {/* UX FIX 4 DONE */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <span className="label-sm" style={{ color: C.ink }}>{p.brand}</span>
+                  <VerBadge />
+                </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                   <Price n={p.price} style={{ fontSize: '2.5rem' }} />
                   <div style={{ textAlign: 'right' }}>
@@ -827,7 +944,7 @@ const CategoryList = ({ nav, setSelCategory }) => (
 );
 
 // 17. CategoryDetail
-const CategoryDetail = ({ c, nav, dbProducts, setSelProduct, addCart }) => {
+const CategoryDetail = ({ c, nav, dbProducts, setSelProduct, addCart, wishlist, toggleWishlist }) => {
   if (!c) return <div className="ctr sec"><div className="neo-card" style={{padding:'3rem', textAlign:'center'}}><h2 className="th">NO CATEGORY SELECTED</h2><button className="neo-btn" style={{...BTNG, marginTop: '2rem'}} onClick={() => nav('categories')}>BACK TO CATEGORIES</button></div></div>;
   
   const catProducts = dbProducts.filter(p => p.cat === c.name);
@@ -857,7 +974,7 @@ const CategoryDetail = ({ c, nav, dbProducts, setSelProduct, addCart }) => {
       <h2 className="ts" style={{ marginBottom: '2rem' }}>COLLECTION</h2>
       {catProducts.length > 0 ? (
         <div className="g-prod">
-          {catProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} />)}
+          {catProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
         </div>
       ) : (
         <div className="neo-card" style={{ padding: '3rem', textAlign: 'center', background: C.surface }}>
@@ -959,7 +1076,12 @@ const CartDrawer = ({ close, cart, checkoutCart, setCart }) => {
                   </div>
                   <h4 className="tb" style={{ fontSize: '1rem', fontWeight: 600, margin: '0.25rem 0' }}>{item.name}</h4>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto' }}>
-                    <span className="label-sm" style={{ color: C.muted }}>QTY: {item.qty}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <button className="neo-btn" style={{...BTNG, padding: '0.25rem 0.6rem'}} onClick={() => setCart(prev => prev.map((p, idx) => idx === i ? { ...p, qty: p.qty - 1 } : p).filter(p => p.qty > 0))}>−</button>
+                      <span className="label-sm" style={{ color: C.muted }}>{item.qty}</span>
+                      <button className="neo-btn" style={{...BTNG, padding: '0.25rem 0.6rem'}} onClick={() => setCart(prev => prev.map((p, idx) => idx === i ? { ...p, qty: p.qty + 1 } : p))}>+</button>
+                    </div>
+                    {/* FIX 2 DONE */}
                     <Price n={item.price} />
                   </div>
                 </div>
@@ -984,6 +1106,82 @@ const CartDrawer = ({ close, cart, checkoutCart, setCart }) => {
   );
 };
 
+const OrderSummary = ({ items, nav }) => {
+  const subtotal = items.reduce((sum, item) => sum + (item.price * item.qty), 0);
+  const shipping = subtotal > 100000 ? 0 : 299;
+  const authFee = 500;
+  const total = subtotal + shipping + authFee;
+
+  return (
+    <div className="ctr sec" style={{ animation: 'fadeIn 0.3s ease', flex: 1 }}>
+      <button className="neo-btn" style={{...BTNG, padding: '0.5rem 1rem', marginBottom: '2rem', fontSize: '0.9rem'}} onClick={() => nav('browse')}>← BACK TO SHOP</button>
+      <h1 className="tp" style={{ marginBottom: '2rem' }}>ORDER SUMMARY</h1>
+      
+      <div className="g-detail">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {items.map((item, i) => (
+            <div key={`${item.id}-${i}`} className="neo-card" style={{ display: 'flex', gap: '1rem', border: `3px solid ${C.border}`, background: C.surface, padding: '1rem', boxShadow: `4px 4px 0 ${C.shadow}` }}>
+              <div style={{ width: '80px', height: '80px', background: item.color, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.3)', fontSize: '2rem' }}>{item.brand.charAt(0)}</span>
+              </div>
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <span className="label-sm" style={{ color: C.muted }}>{item.brand}</span>
+                  <span className="label-sm" style={{ background: C.bg, border: `2px solid ${C.border}`, padding: '0.1rem 0.3rem' }}>{item.size} • {item.cond}</span>
+                </div>
+                <h4 className="tb" style={{ fontSize: '1.2rem', fontWeight: 600, margin: '0.25rem 0' }}>{item.name}</h4>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto', alignItems: 'flex-end' }}>
+                  <span className="label-sm" style={{ color: C.ink }}>QTY: {item.qty}</span>
+                  <Price n={item.price} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ alignSelf: 'start', position: 'sticky', top: '100px' }}>
+          <div className="neo-card" style={{ background: C.surface, border: `4px solid ${C.border}`, padding: '2rem', boxShadow: `6px 6px 0 ${C.shadow}` }}>
+            <h2 className="ts" style={{ marginBottom: '1.5rem', borderBottom: `3px solid ${C.border}`, paddingBottom: '1rem' }}>TOTAL</h2>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span className="tb" style={{ color: C.muted, fontWeight: 600 }}>SUBTOTAL</span>
+                <span className="tb" style={{ fontWeight: 600 }}>Rs. {fmt(subtotal)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span className="tb" style={{ color: C.muted, fontWeight: 600 }}>SHIPPING</span>
+                <span className="tb" style={{ fontWeight: 600 }}>{shipping === 0 ? 'FREE' : `Rs. ${fmt(shipping)}`}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span className="tb" style={{ color: C.muted, fontWeight: 600 }}>AUTH FEE</span>
+                <span className="tb" style={{ fontWeight: 600 }}>Rs. {fmt(authFee)}</span>
+              </div>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `4px solid ${C.border}`, paddingTop: '1.5rem', marginBottom: '2rem' }}>
+              <span className="ts" style={{ margin: 0 }}>TOTAL</span>
+              <Price n={total} style={{ fontSize: '2rem' }} />
+            </div>
+            
+            <button className="neo-btn" style={{ ...BTNP, width: '100%', fontSize: '1rem', padding: '1.5rem 1rem', opacity: 0.6, cursor: 'not-allowed' }} disabled>
+              PLACE ORDER (RAZORPAY COMING SOON)
+            </button>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', marginTop: '1.5rem', justifyContent: 'center' }}>
+              {['Authenticated', 'Escrow Protected', 'Easy Returns'].map(badge => (
+                <span key={badge} className="label-sm" style={{ background: C.bg, border: `2px solid ${C.border}`, padding: '0.3rem 0.6rem', color: C.ink }}>
+                  ✓ {badge.toUpperCase()}
+                </span>
+              ))}
+            </div>
+          </div>
+          {/* FEATURE 7 DONE */}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // 22. Footer
 const Footer = ({ nav }) => (
   <footer style={{ background: C.surface, borderTop: `4px solid ${C.yellow}` }}>
@@ -997,7 +1195,8 @@ const Footer = ({ nav }) => (
           <h4 className="tc" style={{ marginBottom: '1rem' }}>SHOP</h4>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <span style={{ cursor: 'pointer', fontWeight: 600, color: C.muted }} onClick={() => nav('browse')}>All Pieces</span>
-            <span style={{ cursor: 'pointer', fontWeight: 600, color: C.muted }} onClick={() => nav('stores')}>Curators</span>
+            <span style={{ cursor: 'pointer', fontWeight: 600, color: C.muted }} onClick={() => nav('browse')}>Curators</span>
+            {/* FIX 4 DONE */}
           </div>
         </div>
         <div>
@@ -1176,6 +1375,9 @@ export default function App() {
   const [orders, setOrders] = useState([]);
   const [dbUsers, setDbUsers] = useState(INITIAL_USERS);
   const [featured, setFeatured] = useState([101, 202, 301, 401, 501, 601, 102, 203, 305]);
+  const [orderItems, setOrderItems] = useState([]);
+  const [wishlist, setWishlist] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const uuid = () => Math.random().toString(36).substring(2, 11);
 
@@ -1185,24 +1387,24 @@ export default function App() {
   }, []);
 
   const checkoutProduct = useCallback((product) => {
-    setOrders(prev => [{ id: uuid(), product, buyer: userAuthed ? 'Logged In User' : 'Guest Buyer', status: 'Pending' }, ...prev]);
-    setMessageModal({ title: 'ORDER CONFIRMED', text: 'Buy Now successful! Your order is tracked in Admin.' });
-    nav('home');
-  }, [nav, userAuthed]);
+    setOrderItems([{ ...product, qty: 1 }]);
+    nav('order');
+  }, [nav]);
 
   const checkoutCart = useCallback(() => {
-    cart.forEach(item => {
-      setOrders(prev => [{ id: uuid(), product: item, buyer: userAuthed ? 'Logged In User' : 'Guest Buyer', status: 'Pending' }, ...prev]);
-    });
+    setOrderItems([...cart]);
     setCart([]);
     setCartOpen(false);
-    setMessageModal({ title: 'ORDER CONFIRMED', text: 'Checkout successful! Your items are now tracked in Admin.' });
-    nav('home');
-  }, [cart, nav, userAuthed]);
+    nav('order');
+  }, [cart, nav]);
 
   const handleSelProduct = useCallback((product) => {
     setSelProduct(product);
-    setRecent(prev => [product, ...prev.filter(p => p.id !== product.id)].slice(0, 4));
+    setRecent(prev => {
+      const filtered = prev.filter(x => x.id !== product.id);
+      return [product, ...filtered].slice(0, 4);
+    });
+    // FEATURE 10 DONE
   }, []);
 
   const addCart = useCallback((product) => {
@@ -1212,7 +1414,17 @@ export default function App() {
       return [...prev, { ...product, qty: 1 }];
     });
     setCartOpen(true);
+    // FIX 1 DONE
   }, []);
+
+  const toggleWishlist = useCallback((id) => {
+    setWishlist(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  }, []);
+
+  const onSearch = useCallback((q) => {
+    setSearchQuery(q);
+    nav('search');
+  }, [nav]);
 
   useEffect(() => {
     if (!document.getElementById('indrev-fonts')) {
@@ -1263,11 +1475,14 @@ export default function App() {
     }
 
     switch(page) {
-      case 'home': return <Home nav={nav} dbProducts={dbProducts} featured={featured} setSelProduct={handleSelProduct} addCart={addCart} />;
-      case 'browse': return <Browse nav={nav} setSelProduct={handleSelProduct} addCart={addCart} recent={recent} dbProducts={dbProducts} />;
+      case 'home': return <Home nav={nav} dbProducts={dbProducts} featured={featured} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
+      case 'browse': return <Browse nav={nav} setSelProduct={handleSelProduct} addCart={addCart} recent={recent} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
       case 'categories': return <CategoryList nav={nav} setSelCategory={setSelCategory} />;
-      case 'category': return <CategoryDetail c={selCategory} nav={nav} dbProducts={dbProducts} setSelProduct={handleSelProduct} addCart={addCart} />;
+      case 'category': return <CategoryDetail c={selCategory} nav={nav} dbProducts={dbProducts} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
       case 'how': return <How nav={nav} />;
+      case 'wishlist': return <Wishlist nav={nav} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} setSelProduct={handleSelProduct} addCart={addCart} />;
+      case 'search': return <SearchResults query={searchQuery} setQuery={setSearchQuery} dbProducts={dbProducts} nav={nav} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
+      case 'order': return <OrderSummary items={orderItems} nav={nav} />;
       case 'product': return <Product p={selProduct} nav={nav} addCart={addCart} checkout={checkoutProduct} />;
       default: return <Home nav={nav} />;
     }
@@ -1275,7 +1490,7 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100dvh', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
-      <Navbar nav={nav} page={page} cartCount={cart.reduce((a,c)=>a+c.qty,0)} openLogin={() => setLoginOpen(true)} openCart={() => setCartOpen(true)} userAuthed={userAuthed} />
+      <Navbar nav={nav} page={page} cartCount={cart.reduce((a,c)=>a+c.qty,0)} openLogin={() => setLoginOpen(true)} openCart={() => setCartOpen(true)} userAuthed={userAuthed} onSearch={onSearch} />
       <main style={{ display: 'flex', flexDirection: 'column' }}>
         {renderPage()}
       </main>
