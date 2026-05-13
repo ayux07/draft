@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import LoginComponent  from './src/components/Auth/Login.jsx';
+import SignupComponent from './src/components/Auth/Signup.jsx';
 
 // 2. Palette (const C)
 const C = {
@@ -1015,31 +1017,22 @@ const How = ({ nav }) => (
   </div>
 );
 
-// 19. Login Modal
-const LoginModal = ({ close, setUserAuthed, setMessageModal }) => (
-  <ModalWrapper close={close} title="ENTER INDREV">
-    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-      <h2 className="ts">WELCOME BACK</h2>
-      <p className="tb" style={{ color: C.muted }}>Sign in to track orders and save preferences.</p>
+// 19. AuthModal — wraps Login / Signup components with overlay
+const AuthModal = ({ close, setUserAuthed, mode, setMode }) => (
+  <div className="auth-overlay" onClick={close}>
+    <div onClick={e => e.stopPropagation()}>
+      {mode === 'login'
+        ? <LoginComponent
+            onClose={close}
+            onSwitchToSignup={() => setMode('signup')}
+          />
+        : <SignupComponent
+            onClose={close}
+            onSwitchToLogin={() => setMode('login')}
+          />
+      }
     </div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-      <input type="email" placeholder="Email Address" style={INP} />
-      <input type="password" placeholder="Password" style={INP} />
-      <button className="neo-btn" style={{...BTNP, width: '100%', marginTop: '1rem'}} onClick={() => { 
-        setUserAuthed(true); 
-        close(); 
-        setMessageModal({ title: 'WELCOME BACK', text: 'Mock Login Successful. You are now signed in.' });
-      }}>SIGN IN</button>
-      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <span className="label-sm" style={{ color: C.muted }}>OR</span>
-      </div>
-      <button className="neo-btn" style={{...BTNG, width: '100%'}} onClick={() => { 
-        setUserAuthed(true); 
-        close(); 
-        setMessageModal({ title: 'WELCOME BACK', text: 'Mock Social Login Successful.' });
-      }}>CONTINUE WITH GOOGLE</button>
-    </div>
-  </ModalWrapper>
+  </div>
 );
 
 // 20. Cart Drawer
@@ -1367,6 +1360,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [authMode, setAuthMode]   = useState('login'); // 'login' | 'signup'
   const [messageModal, setMessageModal] = useState(null);
   const [userAuthed, setUserAuthed] = useState(false);
   const [recent, setRecent] = useState([]);
@@ -1490,12 +1484,19 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100dvh', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
-      <Navbar nav={nav} page={page} cartCount={cart.reduce((a,c)=>a+c.qty,0)} openLogin={() => setLoginOpen(true)} openCart={() => setCartOpen(true)} userAuthed={userAuthed} onSearch={onSearch} />
+      <Navbar nav={nav} page={page} cartCount={cart.reduce((a,c)=>a+c.qty,0)} openLogin={() => { setAuthMode('login'); setLoginOpen(true); }} openCart={() => setCartOpen(true)} userAuthed={userAuthed} onSearch={onSearch} />
       <main style={{ display: 'flex', flexDirection: 'column' }}>
         {renderPage()}
       </main>
       <Footer nav={nav} />
-      {loginOpen && <LoginModal close={() => setLoginOpen(false)} setUserAuthed={setUserAuthed} setMessageModal={setMessageModal} />}
+      {loginOpen && (
+        <AuthModal
+          close={() => setLoginOpen(false)}
+          setUserAuthed={setUserAuthed}
+          mode={authMode}
+          setMode={setAuthMode}
+        />
+      )}
       {cartOpen && <CartDrawer close={() => setCartOpen(false)} cart={cart} checkoutCart={checkoutCart} setCart={setCart} />}
       {messageModal && (
         <ModalWrapper close={() => setMessageModal(null)} title={messageModal.title}>
