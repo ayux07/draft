@@ -30,21 +30,39 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [selProduct, setSelProduct] = useState(null);
   const [selCategory, setSelCategory] = useState(null);
-  const [cart, setCart] = useState([]);
+
+  // ── Persisted States ──────────────────────────────
+  const [cart, setCart] = useState(() => {
+    const saved = localStorage.getItem('indrev_cart');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [wishlist, setWishlist] = useState(() => {
+    const saved = localStorage.getItem('indrev_wishlist');
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [userAuthed, setUserAuthed] = useState(() => {
+    const saved = localStorage.getItem('indrev_authed');
+    return saved === 'true';
+  });
+
+  const [orders, setOrders] = useState(() => {
+    const saved = localStorage.getItem('indrev_orders');
+    return saved ? JSON.parse(saved) : [];
+  });
+
   const [cartOpen, setCartOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [authMode, setAuthMode]   = useState('login'); // 'login' | 'signup'
   const [messageModal, setMessageModal] = useState(null);
-  const [userAuthed, setUserAuthed] = useState(false);
   const [recent, setRecent] = useState([]);
   const [dbProducts, setDbProducts] = useState(INITIAL_PRODUCTS);
   const [dbSellers, setDbSellers]   = useState(INITIAL_SELLERS);
   const [adminAuthed, setAdminAuthed] = useState(false);
-  const [orders, setOrders] = useState([]);
   const [dbUsers, setDbUsers] = useState(INITIAL_USERS);
   const [featured, setFeatured] = useState([101, 202, 301, 401, 501, 601, 102, 203, 305]);
   const [orderItems, setOrderItems] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const nav = useCallback((k) => {
@@ -90,6 +108,23 @@ export default function App() {
     nav('search');
   }, [nav]);
 
+  // ── Sync to LocalStorage ──────────────────────────
+  useEffect(() => {
+    localStorage.setItem('indrev_cart', JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem('indrev_wishlist', JSON.stringify(wishlist));
+  }, [wishlist]);
+
+  useEffect(() => {
+    localStorage.setItem('indrev_authed', userAuthed);
+  }, [userAuthed]);
+
+  useEffect(() => {
+    localStorage.setItem('indrev_orders', JSON.stringify(orders));
+  }, [orders]);
+
   useEffect(() => {
     if (!document.getElementById('indrev-fonts')) {
       const link = document.createElement('link');
@@ -123,13 +158,13 @@ export default function App() {
               <h2 className="ts" style={{ marginBottom: '1.5rem', textAlign: 'center' }}>ADMIN ACCESS</h2>
               <input type="password" placeholder="Enter password..." style={{...INP, marginBottom: '1.5rem'}} onKeyDown={(e) => {
                 if (e.key === 'Enter') {
-                  if (e.target.value === 'indrev2026') setAdminAuthed(true);
+                  if (e.target.value === import.meta.env.VITE_ADMIN_PASS) setAdminAuthed(true);
                   else alert('Incorrect password.');
                 }
               }} />
               <button className="neo-btn" style={{...BTNP, width: '100%'}} onClick={(e) => {
                 const input = e.target.previousSibling;
-                if (input.value === 'indrev2026') setAdminAuthed(true);
+                if (input.value === import.meta.env.VITE_ADMIN_PASS) setAdminAuthed(true);
                 else alert('Incorrect password.');
               }}>UNLOCK</button>
             </div>
