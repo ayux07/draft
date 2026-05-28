@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import AuthModal from './components/Auth/AuthModal';
+import { MobileTabs } from './components/MobileTabs';
 
 // Pages
 import Home from './pages/Home';
@@ -30,6 +31,7 @@ export default function App() {
   const [page, setPage] = useState('home');
   const [selProduct, setSelProduct] = useState(null);
   const [selCategory, setSelCategory] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null);
 
   // ── Persisted States ──────────────────────────────
   const [cart, setCart] = useState(() => {
@@ -175,13 +177,13 @@ export default function App() {
     }
 
     switch(page) {
-      case 'home': return <Home nav={nav} dbProducts={dbProducts} featured={featured} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
-      case 'browse': return <Browse nav={nav} setSelProduct={handleSelProduct} addCart={addCart} recent={recent} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
+      case 'home': return <Home nav={nav} dbProducts={dbProducts} featured={featured} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />;
+      case 'browse': return <Browse nav={nav} setSelProduct={handleSelProduct} addCart={addCart} recent={recent} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />;
       case 'categories': return <CategoryList nav={nav} setSelCategory={setSelCategory} />;
-      case 'category': return <CategoryDetail c={selCategory} nav={nav} dbProducts={dbProducts} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
+      case 'category': return <CategoryDetail c={selCategory} nav={nav} dbProducts={dbProducts} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />;
       case 'how': return <How nav={nav} />;
-      case 'wishlist': return <Wishlist nav={nav} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} setSelProduct={handleSelProduct} addCart={addCart} />;
-      case 'search': return <SearchResults query={searchQuery} setQuery={setSearchQuery} dbProducts={dbProducts} nav={nav} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />;
+      case 'wishlist': return <Wishlist nav={nav} dbProducts={dbProducts} wishlist={wishlist} toggleWishlist={toggleWishlist} setSelProduct={handleSelProduct} addCart={addCart} setQuickViewProduct={setQuickViewProduct} />;
+      case 'search': return <SearchResults query={searchQuery} setQuery={setSearchQuery} dbProducts={dbProducts} nav={nav} setSelProduct={handleSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />;
       case 'order': return <OrderSummary items={orderItems} nav={nav} />;
       case 'product': return <ProductDetail p={selProduct} nav={nav} addCart={addCart} checkout={checkoutProduct} />;
       default: return <Home nav={nav} />;
@@ -190,11 +192,19 @@ export default function App() {
 
   return (
     <div style={{ minHeight: '100dvh', display: 'grid', gridTemplateRows: 'auto 1fr auto' }}>
-      <Navbar nav={nav} page={page} cartCount={cart.reduce((a,c)=>a+c.qty,0)} openLogin={() => { setAuthMode('login'); setLoginOpen(true); }} openCart={() => setCartOpen(true)} userAuthed={userAuthed} onSearch={onSearch} />
+      <Navbar 
+        nav={nav} 
+        cartCount={cart.reduce((a,c)=>a+(c.qty||1),0)} 
+        wishlistCount={wishlist.length}
+        setLoginOpen={setLoginOpen}
+        setCartOpen={setCartOpen}
+      />
       <main style={{ display: 'flex', flexDirection: 'column' }}>
         {renderPage()}
       </main>
       <Footer nav={nav} />
+      
+      <MobileTabs nav={nav} page={page} cartCount={cart.length} setCartOpen={setCartOpen} />
       {loginOpen && (
         <AuthModal
           close={() => setLoginOpen(false)}
@@ -203,6 +213,19 @@ export default function App() {
         />
       )}
       {cartOpen && <CartDrawer close={() => setCartOpen(false)} cart={cart} checkoutCart={checkoutCart} setCart={setCart} />}
+      
+      {quickViewProduct && (
+        <ModalWrapper close={() => setQuickViewProduct(null)} title="QUICK LOOK">
+          <ProductDetail 
+            p={quickViewProduct} 
+            nav={(k) => { setQuickViewProduct(null); nav(k); }} 
+            addCart={addCart} 
+            checkout={(p) => { setQuickViewProduct(null); checkoutProduct(p); }}
+            isQuickView={true}
+          />
+        </ModalWrapper>
+      )}
+
       {messageModal && (
         <ModalWrapper close={() => setMessageModal(null)} title={messageModal.title}>
           <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>

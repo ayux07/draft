@@ -24,7 +24,17 @@ export const C = {
   
   // Borders & shadows
   border: "#0D0D0D", 
-  shadow: "#0D0D0D", 
+  shadow: "#0D0D0D",  // Hard offset, zero blur
+};
+
+export const ICONS = {
+  cart: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4H6zM3 6h18M16 10a4 4 0 01-8 0" /></svg>,
+  search: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>,
+  heart: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78v0z" /></svg>,
+  user: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>,
+  menu: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M3 12h18M3 6h18M3 18h18" /></svg>,
+  close: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M18 6L6 18M6 6l12 12" /></svg>,
+  eye: (s=24) => <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="square" strokeLinejoin="miter"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>,
 };
 
 export const TAG_COLORS = {
@@ -104,7 +114,13 @@ export const GLOBAL_CSS = `
   .tsm { font-size: clamp(0.75rem, 0.5vw + 0.5rem, 0.875rem); margin: 0; }
   .label-sm { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
   
-  @media (hover: none) { .atc-btn { opacity: 1 !important; } }
+  @media (hover: none) { 
+    .atc-btn, .quick-view-btn { opacity: 1 !important; visibility: visible !important; } 
+  }
+  @media (hover: hover) {
+    .quick-view-btn { opacity: 0; visibility: hidden; transition: all 0.2s ease; }
+    .neo-card:hover .quick-view-btn { opacity: 1; visibility: visible; }
+  }
 
   .gender-strip { scroll-behavior: smooth; }
   .gender-strip::-webkit-scrollbar { display: none; }
@@ -131,6 +147,23 @@ export const GLOBAL_CSS = `
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Mobile Layout Fixes */
+  .neo-card {
+    width: 100%;
+    max-width: 100%;
+  }
+  @media (max-width: 600px) {
+    .hero-buttons {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 10px !important;
+    }
+    .hero-buttons button {
+      width: 100%;
+      box-sizing: border-box;
+    }
   }
 `;
 

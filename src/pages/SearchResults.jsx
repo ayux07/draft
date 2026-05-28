@@ -2,7 +2,7 @@ import React from 'react';
 import { C, BTNG, INP } from '../data/theme';
 import ProductCard from '../components/ProductCard';
 
-export const SearchResults = ({ query, setQuery, dbProducts, nav, setSelProduct, addCart, wishlist, toggleWishlist }) => {
+export const SearchResults = ({ query, setQuery, dbProducts, nav, setSelProduct, addCart, wishlist, toggleWishlist, setQuickViewProduct }) => {
   const res = dbProducts.filter(p => !p.hidden && (p.name.toLowerCase().includes(query.toLowerCase()) || p.brand.toLowerCase().includes(query.toLowerCase())));
 
   return (
@@ -18,7 +18,7 @@ export const SearchResults = ({ query, setQuery, dbProducts, nav, setSelProduct,
       
       {res.length > 0 ? (
         <div className="g-prod">
-          {res.map(p => <ProductCard key={`search-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+          {res.map(p => <ProductCard key={`search-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />)}
         </div>
       ) : (
         <div className="neo-card" style={{ padding: '4rem 2rem', textAlign: 'center', background: C.surface }}>

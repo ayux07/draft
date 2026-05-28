@@ -2,7 +2,7 @@ import React from 'react';
 import { C, BTNP, BTNG } from '../data/theme';
 import ProductCard from '../components/ProductCard';
 
-export const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishlist, toggleWishlist }) => {
+export const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishlist, toggleWishlist, setQuickViewProduct }) => {
   const featProducts = (() => {
     const pinned = dbProducts.filter(p => featured.includes(p.id));
     if (pinned.length > 0) return pinned;
@@ -39,7 +39,7 @@ export const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishli
               Shop authenticated luxury pieces from top verified curators. 
               Menswear, womenswear, and rare archival streetwear.
             </p>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+            <div className="hero-buttons" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <button className="neo-btn" style={{...BTNP, fontSize: '1.2rem', padding: '1rem 2rem'}} onClick={() => nav('browse')}>SHOP COLLECTION</button>
               <button className="neo-btn" style={{...BTNG, fontSize: '1.2rem', padding: '1rem 2rem'}} onClick={() => nav('categories')}>VIEW CATEGORIES</button>
             </div>
@@ -67,7 +67,7 @@ export const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishli
       <div className="ctr sec">
         <h2 className="ts" style={{ textAlign: 'center', marginBottom: '3rem' }}>NEW ARRIVALS</h2>
         <div className="g-prod" style={{ justifyContent: 'center' }}>
-          {featProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+          {featProducts.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />)}
         </div>
       </div>
     </div>

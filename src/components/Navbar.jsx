@@ -1,100 +1,94 @@
 import React, { useState } from 'react';
-import { C, BTNG, BTNP, INP } from '../data/theme';
+import { C, ICONS } from '../data/theme';
 
-/**
- * Global Navigation Bar
- */
-export const Navbar = ({ nav, page, cartCount, openLogin, openCart, userAuthed, onSearch }) => {
+export const Navbar = ({ nav, cartCount, wishlistCount, setLoginOpen, setCartOpen }) => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const links = [
-    { k: 'browse', l: 'Browse' },
-    { k: 'categories', l: 'Categories' },
-    { k: 'how', l: 'How It Works' }
-  ];
+
+  const Link = ({ k, label }) => (
+    <button 
+      onClick={() => { nav(k); setMenuOpen(false); }}
+      className="label-sm"
+      style={{ 
+        background: 'none', border: 'none', cursor: 'pointer', color: C.ink, 
+        fontWeight: 700, fontSize: '0.9rem', padding: '0.5rem',
+        borderBottom: '3px solid transparent',
+        transition: 'all 0.2s'
+      }}
+      onMouseEnter={e => e.target.style.borderBottom = `3px solid ${C.yellow}`}
+      onMouseLeave={e => e.target.style.borderBottom = '3px solid transparent'}
+    >
+      {label}
+    </button>
+  );
 
   return (
-    <>
-      <nav style={{ position: 'sticky', top: 0, zIndex: 50, background: C.surface, borderBottom: `3px solid ${C.border}` }}>
-        <div className="ctr" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '70px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button className="nav-mobile" onClick={() => setMenuOpen(true)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: C.ink }}>☰</button>
-            <div onClick={() => nav('home')} style={{ cursor: 'pointer' }}>
-              <h1 className="ts" style={{ margin: 0, cursor: 'pointer' }}>INDREV</h1>
-            </div>
-          </div>
+    <nav style={{ position: 'sticky', top: 0, zIndex: 1000, background: '#fff', borderBottom: `3px solid ${C.border}` }}>
+      <div className="ctr" style={{ height: '70px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <h1 
+            onClick={() => nav('home')}
+            style={{ fontFamily: 'Bangers', fontSize: '2rem', cursor: 'pointer', letterSpacing: '2px', color: C.ink }}
+          >
+            INDREV
+          </h1>
           
-          <div className="nav-desktop" style={{ gap: '2rem', alignItems: 'center' }}>
-            {links.map(x => (
-              <div 
-                key={x.k} 
-                onClick={() => nav(x.k)} 
-                style={{ cursor: 'pointer', fontWeight: 600, position: 'relative' }}>
-                {x.l}
-                {page === x.k && <div style={{ position: 'absolute', bottom: '-4px', left: 0, right: 0, height: '4px', background: C.yellow }}></div>}
-              </div>
-            ))}
-          </div>
-
-          <div className="nav-desktop" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <input 
-              type="text" 
-              placeholder="Search..." 
-              value={searchQuery} 
-              onChange={e => setSearchQuery(e.target.value)} 
-              onKeyDown={e => e.key === 'Enter' && onSearch(searchQuery)}
-              style={{...INP, width: '280px'}} 
-            />
-            <button className="neo-btn" style={{...BTNG, padding: '0.5rem'}} onClick={() => onSearch(searchQuery)}>
-              🔍
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button className="neo-btn nav-desktop" style={{...BTNG, padding: '0.5rem 1rem'}} onClick={() => nav('wishlist')}>♥ SAVED</button>
-            <button className="neo-btn nav-desktop" style={{...BTNG, padding: '0.5rem 1rem'}} onClick={openLogin}>{userAuthed ? 'ACCOUNT' : 'LOGIN'}</button>
-            <button className="neo-btn" style={{...BTNP, padding: '0.5rem 1rem'}} onClick={openCart}>
-              CART {cartCount > 0 && `(${cartCount})`}
-            </button>
+          <div className="nav-desktop" style={{ display: 'flex', gap: '1rem' }}>
+            <Link k="browse" label="BROWSE" />
+            <Link k="stores" label="STORES" />
+            <Link k="how" label="HOW IT WORKS" />
           </div>
         </div>
-      </nav>
 
-      {/* Mobile Sidebar Overlay */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <button onClick={() => nav('search')} className="neo-btn nav-desktop" style={{ background: C.bg, border: `2px solid ${C.border}`, padding: '0.5rem', display: 'flex', boxShadow: `2px 2px 0 ${C.shadow}` }}>
+            {ICONS.search(20)}
+          </button>
+          
+          <button 
+            onClick={() => nav('wishlist')} 
+            className="neo-btn nav-desktop" 
+            style={{ 
+              background: C.bg, border: `2px solid ${C.border}`, padding: '0.5rem', display: 'flex', 
+              boxShadow: `2px 2px 0 ${C.shadow}`, position: 'relative' 
+            }}
+          >
+            {ICONS.heart(20)}
+            {wishlistCount > 0 && (
+              <span style={{ position: 'absolute', top: '-5px', right: '-5px', background: C.red, color: '#fff', fontSize: '0.7rem', fontWeight: 800, padding: '0.1rem 0.3rem', border: `2px solid ${C.border}` }}>
+                {wishlistCount}
+              </span>
+            )}
+          </button>
+
+          <button 
+            onClick={() => setCartOpen(true)} 
+            className="neo-btn nav-desktop" 
+            style={{ 
+              background: C.yellow, border: `3px solid ${C.border}`, padding: '0.5rem 0.8rem', 
+              display: 'flex', alignItems: 'center', gap: '0.5rem', boxShadow: `3px 3px 0 ${C.shadow}` 
+            }}
+          >
+            {ICONS.cart(22)}
+            <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>{cartCount}</span>
+          </button>
+
+          <button className="nav-mobile" onClick={() => setMenuOpen(!menuOpen)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0.5rem' }}>
+            {menuOpen ? ICONS.close(28) : ICONS.menu(28)}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
       {menuOpen && (
-        <div style={{ position: 'fixed', inset: 0, background: C.surface, zIndex: 100, display: 'flex', flexDirection: 'column' }}>
-          <div className="ctr" style={{ display: 'flex', justifyContent: 'flex-end', height: '70px', alignItems: 'center' }}>
-            <button onClick={() => setMenuOpen(false)} style={{ background: 'none', border: 'none', fontSize: '2rem', cursor: 'pointer', color: C.ink }}>×</button>
-          </div>
-          <div className="ctr" style={{ display: 'flex', flexDirection: 'column', gap: '2rem', padding: '2rem 1rem' }}>
-            <div onClick={() => { nav('home'); setMenuOpen(false); }} className="th" style={{ cursor: 'pointer' }}>HOME</div>
-            {links.map(x => (
-              <div key={x.k} onClick={() => { nav(x.k); setMenuOpen(false); }} className="th" style={{ cursor: 'pointer' }}>
-                {x.l}
-              </div>
-            ))}
-            <button className="neo-btn" style={{...BTNG, width: 'max-content', marginTop: '2rem'}} onClick={() => { openLogin(); setMenuOpen(false); }}>{userAuthed ? 'ACCOUNT' : 'LOGIN / SIGN UP'}</button>
-          </div>
+        <div style={{ position: 'fixed', inset: 0, top: '70px', background: '#fff', zIndex: 999, display: 'flex', flexDirection: 'column', padding: '2rem', gap: '2rem' }}>
+          <button onClick={() => { nav('browse'); setMenuOpen(false); }} style={{ fontFamily: 'Bangers', fontSize: '2.5rem', textAlign: 'left', border: 'none', background: 'none' }}>BROWSE</button>
+          <button onClick={() => { nav('stores'); setMenuOpen(false); }} style={{ fontFamily: 'Bangers', fontSize: '2.5rem', textAlign: 'left', border: 'none', background: 'none' }}>STORES</button>
+          <button onClick={() => { nav('how'); setMenuOpen(false); }} style={{ fontFamily: 'Bangers', fontSize: '2.5rem', textAlign: 'left', border: 'none', background: 'none' }}>HOW IT WORKS</button>
+          <button onClick={() => { setLoginOpen(true); setMenuOpen(false); }} style={{ fontFamily: 'Bangers', fontSize: '2.5rem', textAlign: 'left', border: 'none', background: 'none', color: C.blue }}>LOG IN</button>
         </div>
       )}
-
-      {/* Mobile Bottom Tab Bar */}
-      <div className="tab-bar">
-        {[
-          { k: 'home', l: 'HOME', icon: '🏠' },
-          { k: 'browse', l: 'SHOP', icon: '🛍️' },
-          { k: 'search', l: 'SEARCH', icon: '🔍' },
-          { k: 'categories', l: 'CATEGORIES', icon: '📁' },
-          { k: 'wishlist', l: 'SAVED', icon: '♥' }
-        ].map(x => (
-          <div key={x.k} onClick={() => nav(x.k)} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', cursor: 'pointer', color: page === x.k ? C.ink : C.muted }}>
-            <span style={{ fontSize: '1.2rem', marginBottom: '0.2rem' }}>{x.icon}</span>
-            <span className="label-sm" style={{ color: page === x.k ? C.ink : C.muted }}>{x.l}</span>
-          </div>
-        ))}
-      </div>
-      <div className="tab-bar-spacer"></div>
-    </>
+    </nav>
   );
 };
 

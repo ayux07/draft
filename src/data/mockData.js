@@ -34,18 +34,18 @@ export const CATEGORY_DIRECTORY = [
 
 export const INITIAL_PRODUCTS = [
   // SELLER 1 (ARCHIVE BLVD) - 5 items
-  { id: 101, name: "Deconstructed Wool Blazer", price: 85000, gender: "Men", cat: "Blazers", sid: 1, cond: "Excellent", size: "M", brand: "Maison Margiela", tag: "Rare", color: "#2A2A2A" },
-  { id: 102, name: "Asymmetric Silk Dress", price: 120000, gender: "Women", cat: "Dresses", sid: 1, cond: "New", size: "S", brand: "Rick Owens", tag: "Featured", color: "#111111" },
-  { id: 103, name: "Oversized Canvas Parka", price: 65000, gender: "Unisex", cat: "Outerwear", sid: 1, cond: "Like New", size: "L", brand: "Yohji Yamamoto", tag: null, color: "#303830" },
-  { id: 104, name: "Tabi Leather Boots", price: 75000, gender: "Women", cat: "Footwear", sid: 1, cond: "Good", size: "38", brand: "Maison Margiela", tag: "Rare", color: "#4A0000" },
-  { id: 105, name: "Cropped Structured Top", price: 45000, gender: "Women", cat: "Tops", sid: 1, cond: "Excellent", size: "XS", brand: "Comme des Garçons", tag: null, color: "#1A1A1A" },
+  { id: 101, name: "Deconstructed Wool Blazer", price: 85000, gender: "Men", cat: "Blazers", sid: 1, cond: "Excellent", size: "M", brand: "Maison Margiela", tag: "Rare", color: "#2A2A2A", img: "https://images.unsplash.com/photo-1594932224456-72f7723238fd?auto=format&fit=crop&w=600&q=80" },
+  { id: 102, name: "Asymmetric Silk Dress", price: 120000, gender: "Women", cat: "Dresses", sid: 1, cond: "New", size: "S", brand: "Rick Owens", tag: "Featured", color: "#111111", img: "https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=600&q=80" },
+  { id: 103, name: "Oversized Canvas Parka", price: 65000, gender: "Unisex", cat: "Outerwear", sid: 1, cond: "Like New", size: "L", brand: "Yohji Yamamoto", tag: null, color: "#303830", img: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80" },
+  { id: 104, name: "Tabi Leather Boots", price: 75000, gender: "Women", cat: "Footwear", sid: 1, cond: "Good", size: "38", brand: "Maison Margiela", tag: "Rare", color: "#4A0000", img: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=600&q=80" },
+  { id: 105, name: "Cropped Structured Top", price: 45000, gender: "Women", cat: "Tops", sid: 1, cond: "Excellent", size: "XS", brand: "Comme des Garçons", tag: null, color: "#1A1A1A", img: "https://images.unsplash.com/photo-1534126416832-a88fdf2911c2?auto=format&fit=crop&w=600&q=80" },
 
   // SELLER 2 (NVSN STUDIOS) - 5 items
-  { id: 201, name: "Distressed Denim Jacket", price: 55000, gender: "Unisex", cat: "Motorsports", sid: 2, cond: "New", size: "M", brand: "Balenciaga", tag: "New", color: "#2B3A4F" },
-  { id: 202, name: "Chunky Sole Sneakers", price: 82000, gender: "Unisex", cat: "Sportswear", sid: 2, cond: "Like New", size: "42", brand: "Rick Owens", tag: "Featured", color: "#1E1E1E" },
-  { id: 203, name: "Graphic Print Hoodie", price: 38000, gender: "Unisex", cat: "Anime", sid: 2, cond: "Excellent", size: "XL", brand: "Vetements", tag: null, color: "#400000" },
-  { id: 204, name: "Nylon Cargo Pants", price: 42000, gender: "Men", cat: "Trousers", sid: 2, cond: "Good", size: "L", brand: "Prada", tag: null, color: "#1A1F1A" },
-  { id: 205, name: "Logo Beanie", price: 15000, gender: "Unisex", cat: "Accessories", sid: 2, cond: "New", size: "OS", brand: "Acne Studios", tag: null, color: "#202020" },
+  { id: 201, name: "Distressed Denim Jacket", price: 55000, gender: "Unisex", cat: "Motorsports", sid: 2, cond: "New", size: "M", brand: "Balenciaga", tag: "New", color: "#2B3A4F", img: "https://images.unsplash.com/photo-1576871337622-98d48d1cf021?auto=format&fit=crop&w=600&q=80" },
+  { id: 202, name: "Chunky Sole Sneakers", price: 82000, gender: "Unisex", cat: "Sportswear", sid: 2, cond: "Like New", size: "42", brand: "Rick Owens", tag: "Featured", color: "#1E1E1E", img: "https://images.unsplash.com/photo-1512374382149-433a727ea2cd?auto=format&fit=crop&w=600&q=80" },
+  { id: 203, name: "Graphic Print Hoodie", price: 38000, gender: "Unisex", cat: "Anime", sid: 2, cond: "Excellent", size: "XL", brand: "Vetements", tag: null, color: "#400000", img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=600&q=80" },
+  { id: 204, name: "Nylon Cargo Pants", price: 42000, gender: "Men", cat: "Trousers", sid: 2, cond: "Good", size: "L", brand: "Prada", tag: null, color: "#1A1F1A", img: "https://images.unsplash.com/photo-1624282158511-931730009e90?auto=format&fit=crop&w=600&q=80" },
+  { id: 205, name: "Logo Beanie", price: 15000, gender: "Unisex", cat: "Accessories", sid: 2, cond: "New", size: "OS", brand: "Acne Studios", tag: null, color: "#202020", img: "https://images.unsplash.com/photo-1521369909029-2afed882baee?auto=format&fit=crop&w=600&q=80" },
 
   // SELLER 3 (LUXE THREADS) - 5 items
   { id: 301, name: "Classic Tuxedo Suit", price: 150000, gender: "Men", cat: "Suits", sid: 3, cond: "Like New", size: "40R", brand: "Tom Ford", tag: "Featured", color: "#0A0A0A" },

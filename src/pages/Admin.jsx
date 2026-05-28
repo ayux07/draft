@@ -18,6 +18,7 @@ export const Admin = ({ nav, dbProducts, setDbProducts, orders, setOrders, dbUse
     size: '',
     cond: 'New',
     tag: '',
+    img: '',
     color: '#000000'
   };
   const [form, setForm] = useState(initialForm);
@@ -36,7 +37,7 @@ export const Admin = ({ nav, dbProducts, setDbProducts, orders, setOrders, dbUse
 
   const startEdit = (p) => {
     setEditingProduct(p);
-    setForm({ ...p, tag: p.tag || '' });
+    setForm({ ...p, tag: p.tag || '', img: p.img || '' });
     setIsAdding(false);
   };
 
@@ -163,6 +164,10 @@ export const Admin = ({ nav, dbProducts, setDbProducts, orders, setOrders, dbUse
                     </select>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label className="label-sm">Image URL</label>
+                    <input type="text" placeholder="https://unsplash.com/..." style={INP} value={form.img} onChange={e => setForm({...form, img: e.target.value})} />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <label className="label-sm">Card Background Color</label>
                     <input type="color" style={{...INP, padding: '0.2rem', height: '48px'}} value={form.color} onChange={e => setForm({...form, color: e.target.value})} />
                   </div>
@@ -182,11 +187,16 @@ export const Admin = ({ nav, dbProducts, setDbProducts, orders, setOrders, dbUse
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                   {dbProducts.map(p => (
                     <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', border: `3px solid ${C.border}`, background: p.hidden ? C.bg : '#fff', flexWrap: 'wrap', gap: '1rem' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <span className="tb" style={{ fontWeight: 600 }}>{p.name}</span>
-                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                          <Price n={p.price} style={{ fontSize: '1rem' }} />
-                          <span className="label-sm" style={{ color: C.muted }}>• {p.brand} • {p.cat}</span>
+                      <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                        <div style={{ width: '50px', height: '50px', background: p.color, border: `2px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                          {p.img ? <img src={p.img} style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span style={{ fontFamily: 'Bangers', fontSize: '1.2rem', color: 'rgba(255,255,255,0.3)' }}>{p.brand.charAt(0)}</span>}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <span className="tb" style={{ fontWeight: 600 }}>{p.name}</span>
+                          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <Price n={p.price} style={{ fontSize: '1rem' }} />
+                            <span className="label-sm" style={{ color: C.muted }}>• {p.brand} • {p.cat}</span>
+                          </div>
                         </div>
                       </div>
                       <div style={{ display: 'flex', gap: '1rem' }}>

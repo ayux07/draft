@@ -26,15 +26,25 @@ export const ProductDetail = ({ p, nav, addCart, checkout, setAuthModalOpen }) =
         <div className="g-detail">
           {/* Image well */}
           <div style={{ border: `3px solid ${C.border}`, background: p.color, width: '100%', aspectRatio: '4/5', position: 'relative', overflow: 'hidden', boxShadow: `6px 6px 0 ${C.shadow}` }}>
-            <div className="halftone" style={{ position: 'absolute', inset: 0, opacity: 0.5 }}></div>
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.2)', fontSize: '6vw', transform: 'rotate(-45deg)' }}>{p.brand}</span>
-            </div>
+            {p.img ? (
+              <img src={p.img} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.2)', fontSize: '6vw', transform: 'rotate(-45deg)' }}>{p.brand}</span>
+              </div>
+            )}
+            <div className="halftone" style={{ position: 'absolute', inset: 0, opacity: 0.5, pointerEvents: 'none' }}></div>
             {p.tag && (
               <div style={{ position: 'absolute', top: '1rem', left: '1rem', zIndex: 10 }}>
-                <span style={{ background: C.yellow, color: C.ink, border: `2px solid ${C.border}`, padding: '0.4rem 0.8rem', fontSize: '1rem', fontWeight: 700, textTransform: 'uppercase', boxShadow: `2px 2px 0 ${C.shadow}` }}>
+                <div style={{ 
+                  background: C.yellow, color: C.ink, border: `2px solid ${C.border}`,
+                  fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', boxShadow: `2px 2px 0 ${C.shadow}`,
+                  clipPath: p.tag === 'Featured' ? 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' : 'none',
+                  padding: p.tag === 'Featured' ? '0.8rem' : '0.4rem 0.8rem',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}>
                   {p.tag}
-                </span>
+                </div>
               </div>
             )}
           </div>

@@ -4,7 +4,7 @@ import { GENDERS, CATS_BY_GENDER, CONDITIONS } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 import { fmt } from '../utils/formatters';
 
-export const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts, wishlist, toggleWishlist }) => {
+export const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts, wishlist, toggleWishlist, setQuickViewProduct }) => {
   const [filterModal, setFilterModal] = useState(false);
   const [expanded, setExpanded] = useState({ dep: true, cat: false, cond: false, price: false });
   const [tab, setTab] = useState('All');
@@ -90,7 +90,7 @@ export const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts, wishli
           <div className="label-sm" style={{ marginBottom: '1.5rem', color: C.muted }}>SHOWING {filtered.length} CURATED PIECES</div>
           {filtered.length > 0 ? (
             <div className="g-prod">
-              {filtered.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+              {filtered.map(p => <ProductCard key={p.id} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />)}
             </div>
           ) : (
             <div style={{ background: C.surface, border: `3px solid ${C.border}`, padding: '4rem 2rem', textAlign: 'center', boxShadow: `6px 6px 0 ${C.shadow}` }}>
@@ -184,7 +184,7 @@ export const Browse = ({ nav, setSelProduct, addCart, recent, dbProducts, wishli
           <div style={{ marginTop: '5rem', paddingTop: '3rem', borderTop: `4px solid ${C.border}` }}>
             <h2 className="ts" style={{ marginBottom: '2rem' }}>RECENTLY VIEWED</h2>
             <div className="g-prod">
-              {recent.map(p => <ProductCard key={`rec-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} />)}
+              {recent.map(p => <ProductCard key={`rec-${p.id}`} p={p} nav={nav} setSelProduct={setSelProduct} addCart={addCart} wishlist={wishlist} toggleWishlist={toggleWishlist} setQuickViewProduct={setQuickViewProduct} />)}
             </div>
           </div>
         )}

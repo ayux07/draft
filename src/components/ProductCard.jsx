@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { C, TAG_COLORS } from '../data/theme';
+import { C, TAG_COLORS, ICONS } from '../data/theme';
 import { Price } from './common/Price';
 
 /**
@@ -16,40 +16,50 @@ export const ProductCard = ({ p, nav, setSelProduct, addCart, wishlist = [], tog
       onMouseLeave={() => setHov(false)}
       onClick={() => { if(setSelProduct) setSelProduct(p); nav('product'); }}
     >
-      <div style={{ position: 'relative', width: '100%', aspectRatio: '1/1', background: p.color, borderBottom: `3px solid ${C.border}`, overflow: 'hidden' }}>
-        <div className="halftone" style={{ position: 'absolute', inset: 0, opacity: 0.5 }}></div>
-        
-        {/* Placeholder label simulating real product image */}
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.2)', fontSize: '4rem', transform: 'rotate(-45deg)' }}>{p.brand}</span>
-        </div>
-
-        {toggleWishlist && (
-          <button
-            className="neo-btn"
-            style={{ 
-              position: 'absolute', top: '0.5rem', right: '0.5rem', zIndex: 10, 
-              background: C.surface, border: `3px solid ${C.border}`, boxShadow: `2px 2px 0 ${C.shadow}`, 
-              borderRadius: 0, padding: '0.25rem 0.5rem', fontSize: '1.1rem', cursor: 'pointer', 
-              color: wishlist.includes(p.id) ? C.red : C.ink 
-            }}
-            onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
-          >
-            {wishlist.includes(p.id) ? '♥' : '♡'}
-          </button>
-        )}
-        
-        {p.tag && (
-          <div style={{ position: 'absolute', top: '0.5rem', left: '0.5rem', zIndex: 10 }}>
-            <span style={{ 
-              background: TAG_COLORS[p.tag] || C.yellow, color: C.ink, border: `2px solid ${C.border}`, 
-              padding: '0.2rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, 
-              textTransform: 'uppercase', boxShadow: `2px 2px 0 ${C.shadow}` 
-            }}>
-              {p.tag}
-            </span>
+      <div style={{ borderBottom: `3px solid ${C.border}`, background: p.color, width: '100%', aspectRatio: '1/1', position: 'relative', overflow: 'hidden' }}>
+        {p.img ? (
+          <img src={p.img} alt={p.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontFamily: 'Bangers', color: 'rgba(255,255,255,0.2)', fontSize: '3rem' }}>{p.brand.charAt(0)}</span>
           </div>
         )}
+        <div className="halftone" style={{ position: 'absolute', inset: 0, opacity: 0.4, pointerEvents: 'none' }}></div>
+        
+        {p.tag && (
+          <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', zIndex: 10 }}>
+            <div style={{ 
+              background: C.yellow, color: C.ink, border: `2px solid ${C.border}`, padding: '0.25rem 0.5rem', 
+              fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', boxShadow: `2px 2px 0 ${C.shadow}`,
+              clipPath: p.tag === 'Featured' ? 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)' : 'none',
+            }}>
+              {p.tag}
+            </div>
+          </div>
+        )}
+        
+        <button 
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(p.id); }}
+          style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: wishlist.includes(p.id) ? C.red : C.surface, border: `2px solid ${C.border}`, padding: '0.4rem', cursor: 'pointer', boxShadow: `2px 2px 0 ${C.shadow}`, display: 'flex', zIndex: 11 }}
+        >
+          <div style={{ color: wishlist.includes(p.id) ? '#fff' : C.ink }}>
+            {ICONS.heart(18)}
+          </div>
+        </button>
+
+        <button 
+          className="neo-btn quick-view-btn"
+          onClick={(e) => { e.stopPropagation(); if(setQuickViewProduct) setQuickViewProduct(p); }}
+          style={{ 
+            position: 'absolute', bottom: '0.75rem', left: '0.75rem', zIndex: 11, 
+            background: '#fff', border: `2px solid ${C.border}`, padding: '0.4rem', 
+            boxShadow: `2px 2px 0 ${C.shadow}`,
+            alignItems: 'center', gap: '0.4rem'
+          }}
+        >
+          {ICONS.eye(16)}
+          <span style={{ fontSize: '0.7rem', fontWeight: 800 }}>QUICK LOOK</span>
+        </button>
         
         <div 
           className="atc-btn"
