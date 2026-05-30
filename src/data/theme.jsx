@@ -150,20 +150,22 @@ export const GLOBAL_CSS = `
   }
 
   /* Mobile Layout Fixes */
-  .neo-card {
-    width: 100%;
-    max-width: 100%;
-  }
-  @media (max-width: 600px) {
+  .neo-card { width: 100%; max-width: 100%; }
+  @media (max-width: 767px) {
+    .stripe-bg { display: none !important; }
     .hero-buttons {
       display: flex !important;
       flex-direction: column !important;
       gap: 10px !important;
+      width: 100% !important;
     }
     .hero-buttons button {
-      width: 100%;
-      box-sizing: border-box;
+      width: 100% !important;
+      box-sizing: border-box !important;
+      font-size: 1rem !important;
+      padding: 0.875rem 1.5rem !important;
     }
+    .sec { padding: 2rem 0 !important; }
   }
 `;
 
