@@ -25,8 +25,7 @@ export const Home = ({ nav, dbProducts, featured, setSelProduct, addCart, wishli
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.15 }}
         />
         <div className="halftone" style={{ position: 'absolute', inset: 0, zIndex: 0 }}></div>
-        <div className="stripe-bg" style={{ position: 'absolute', top: '-10%', right: '-10%', width: '60%', height: '120%', zIndex: 0, transform: 'rotate(15deg)' }}></div>
-        
+           
         <div className="ctr sec" style={{ position: 'relative', zIndex: 1 }}>
           <div style={{ maxWidth: '800px' }}>
             <div style={{ background: C.yellow, display: 'inline-block', padding: '0.5rem 1rem', border: `3px solid ${C.border}`, marginBottom: '1.5rem', boxShadow: `4px 4px 0 ${C.shadow}` }}>
