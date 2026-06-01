@@ -13,7 +13,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import CartDrawer from './components/CartDrawer';
 import AuthModal from './components/Auth/AuthModal';
-import { MobileTabs } from './components/MobileTabs';
+
 
 // Pages
 import Home from './pages/Home';
@@ -204,7 +204,7 @@ export default function App() {
       </main>
       <Footer nav={nav} />
       
-      <MobileTabs nav={nav} page={page} cartCount={cart.length} setCartOpen={setCartOpen} />
+
       {loginOpen && (
         <AuthModal
           close={() => setLoginOpen(false)}
